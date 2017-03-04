@@ -1,3 +1,4 @@
+import time
 import clientpy2 as cp
 from collections import defaultdict
 
@@ -74,8 +75,6 @@ class Player():
 		return self.run("SCOREBOARD")
 
 
-import time
-
 def run(command):
 	return cp.run("jmv", "mrgoose", command)
 
@@ -103,6 +102,4 @@ if __name__ == '__main__':
 		print(p.parseStatus())
 		# print(p.score())
 		#print(p.game.config)
-        
-# I don't want to mess with your code, but I think that you should run each of the commands, and see what happens, to some extent, this does look like an AI contest
-# But there's a bunch of things that you would wnat to do first.
+
