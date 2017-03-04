@@ -42,6 +42,9 @@ class Player():
 	def run(self, command):
 		return cp.run("jmv", "mrgoose", command)
 
+	def brake(self):
+		return self.run("BRAKE")
+
 	def status(self):
 		st = self.run("STATUS")
 		return st
@@ -86,6 +89,10 @@ class Player():
 
 	def goTo(self, final):
 	    # finding direction
+	    i = 0
+	    while (i < 50): 
+	    	self.brake()
+	    	i += 1
 	    direction = [final[0] - self.position[0],final[1] - self.position[1]]
 	    normalized = math.sqrt(math.pow(direction[0], 2) + math.pow(direction[1], 2))
 	    direction[0] = direction[0]/normalized
@@ -102,9 +109,15 @@ class Player():
 	    n = 3
 	    acceleration = [n * direction[0] - velocity_normalized[0], n * direction[1] - velocity_normalized[1]]
 	    normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
-	    acceleration[0] = math.acos(acceleration[0]/normalized) * (3.14 / 360)
-	    acceleration[1] = math.asin(acceleration[1]/normalized) * (3.14 / 360)
+	    acc_rads = math.atan2(acceleration[0]/normalized, acceleration[1]/normalized)
+	    acc_rads = acc_rads + (math.pi * 2) if acc_rads < 0 else acc_rads
+	    print(acc_rads)
+	    #acceleration[0] = math.atan2(acceleration[0]/normalized)
+	    #acceleration[1] = math.atan2(acceleration[1]/normalized)
 	    var1 = math.sqrt(math.pow(self.position[0] - final[0], 2) + math.pow(self.position[1] - final[1], 2))
+	    while var1 >= 2:
+	    	print "looping"
+	    	self.accelerate(acc_rads, 1)
 		#self.accelerate(radians, 1)
 		#var = math.sqrt(((self.position[0] - final[0])**2) +((self.position[1] - final[1])**2))
 
