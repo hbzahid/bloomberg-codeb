@@ -135,11 +135,11 @@ class Player():
 			return self.run("BOMB %f %f"%(x, y))
 	def scan(self,x, y):
 		return run("SCAN %f %f"%(x, y))
-	
+
 	def goTo(self, final):
 	    # finding direction
 	    i = 0
-	    while (i < 30): 
+	    while (i < 30):
 	    	self.brake()
 	    	i += 1
 	    d = self.parseStatus()
@@ -147,10 +147,10 @@ class Player():
 	    normalized = math.sqrt(math.pow(direction[0], 2) + math.pow(direction[1], 2))
 	    direction[0] = direction[0]/normalized
 	    direction[1] = direction[1]/normalized
-       
+
 	    #normalizing current velocity
 	    normalized = math.sqrt(math.pow(self.velocity[0], 2) + math.pow(self.velocity[1], 2))
-	    
+
 	    velocity_normalized = [self.velocity[0], self.velocity[1]]
 	    velocity_normalized[0] = velocity_normalized[0]/normalized
 	    velocity_normalized[1] = velocity_normalized[1]/normalized
@@ -160,7 +160,7 @@ class Player():
 	    acceleration = [direction[0]-velocity_normalized[0],  velocity_normalized[1] - direction[1]]
 	    normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
 	    #print(direction[0])
-	    #print(self.position[0]) 
+	    #print(self.position[0])
 	    #print(final[0])
 	    #print(direction[1])
 	    #print(self.position[1])
@@ -168,7 +168,7 @@ class Player():
 	    acc_rads = math.atan2(acceleration[1]/normalized,acceleration[0]/normalized)
 	    print(math.degrees(acc_rads))
 	    acc_rads =  (0 - acc_rads) if acc_rads < 0 else (3.14 * 2) - acc_rads
-	    
+
 	    #acceleration[0] = math.atan2(acceleration[0]/normalized)
 	    #acceleration[1] = math.atan2(acceleration[1]/normalized)
 
@@ -183,17 +183,17 @@ class Player():
 	    	if (distance >= 8) and (distance <= 43):
 	    		stuck_counter += 1
 	    	if (stuck_counter > 20):
-	    		break 
+	    		break
 	    	if(distance > 700):
 	    		self.bomb(self.position[0] - 2, self.position[1] - 2, 60)
-	    		break 
+	    		break
 	    	if "jmv" in d.get("MINEPLAYER"):
 	    		self.bomb(self.position[0] - 1, self.position[1] - 2, 60)
 	    		break;
 
 		#self.accelerate(radians, 1)
 		#var = math.sqrt(((self.position[0] - final[0])**2) +((self.position[1] - final[1])**2))
-	def updateAcc_RadsS(self, final): 
+	def updateAcc_RadsS(self, final):
 		distance = math.sqrt((self.position[0]-final[0])**2 + (self.position[1]-final[1])**2)
 		if(distance <= 300):#700 before
 			for i in range(5):
@@ -205,7 +205,7 @@ class Player():
 		acc_rads = math.atan2(direction[1],direction[0])
 		acc_rads =  0 - acc_rads if acc_rads < 0 else 3.14 * 2 - acc_rads
 		return acc_rads
-	def updateAcc_Rads(self, final): 
+	def updateAcc_Rads(self, final):
 		distance = math.sqrt((self.position[0]-final[0])**2 + (self.position[1]-final[1])**2)
 		if(distance <= 700):#700 before
 			for i in range(5):
@@ -221,7 +221,7 @@ class Player():
 	def goToS(self, final):
 	    # finding direction
 	    i = 0
-	    while (i < 8): 
+	    while (i < 8):
 	    	self.brake()
 	    	i += 1
 	    d = self.parseStatus()
@@ -231,7 +231,7 @@ class Player():
 	    direction[1] = direction[1]/normalized
 	    #normalizing current velocity
 	    normalized = math.sqrt(math.pow(self.velocity[0], 2) + math.pow(self.velocity[1], 2))
-	    
+
 	    velocity_normalized = [self.velocity[0], self.velocity[1]]
 	    velocity_normalized[0] = velocity_normalized[0]/normalized
 	    velocity_normalized[1] = velocity_normalized[1]/normalized
@@ -241,7 +241,7 @@ class Player():
 	    acceleration = [direction[0]-velocity_normalized[0],  velocity_normalized[1] - direction[1]]
 	    normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
 	    #print(direction[0])
-	    #print(self.position[0]) 
+	    #print(self.position[0])
 	    #print(final[0])
 	    #print(direction[1])
 	    #print(self.position[1])
@@ -249,7 +249,7 @@ class Player():
 	    acc_rads = math.atan2(acceleration[1]/normalized,acceleration[0]/normalized)
 	    print(math.degrees(acc_rads))
 	    acc_rads =  (0 - acc_rads) if acc_rads < 0 else (3.14 * 2) - acc_rads
-	    
+
 	    #acceleration[0] = math.atan2(acceleration[0]/normalized)
 	    #acceleration[1] = math.atan2(acceleration[1]/normalized)
 
@@ -264,7 +264,7 @@ class Player():
 	    	if (distance >= 8) and (distance <= 40):
 	    		stuck_counter += 1
 	    	if (stuck_counter > 20):
-	    		break 
+	    		break
 	    	if "jmv" in d.get("MINEPLAYER"):
 	    		self.bomb(self.position[0] - 1, self.position[1] - 1, 60)
 	    		break;
@@ -293,7 +293,7 @@ def scan(x, y):
 
 if __name__ == '__main__':
 	p = Player()
-	radians=math.atan(2*900.0/10000.0)#400 instead of 150?
+	radians=math.atan(2*1100.0/10000.0)#400 instead of 150?
 	mineSet=set()
 	while True:
 		p.accelerate(radians, 1)
