@@ -54,6 +54,7 @@ class Player():
 		status = self.status().split(" ")[1:-1]
 		i = 0
 		mines = []
+		t2=[]
 		while (status[i] != 'MINES'):
 			i += 1
 		i += 1
@@ -67,6 +68,7 @@ class Player():
 			mines=mines[1:]
 			t=[]
 			for i in range(len(mines)/3):
+				t2.append(mines[3*i])
 				t.append((float(mines[3*i + 1]),float(mines[3*i + 2])))
 			mines=t[:]
 		players = []
@@ -80,7 +82,7 @@ class Player():
 			i += 1
 		self.position=(float(status[0]),float(status[1]))
 		self.velocity=(float(status[2]),float(status[3]))
-		statusDict = {'MINES': mines, 'PLAYERS': players, 'BOMBS': bombs, 'x': status[0], 'y': status[1],
+		statusDict = {'MINES': mines, 'MINEPLAYER':t2 , 'PLAYERS': players, 'BOMBS': bombs, 'x': status[0], 'y': status[1],
 						'dx': status[2], 'dy': status[3]}
 		return statusDict
 
@@ -90,36 +92,72 @@ class Player():
 	def goTo(self, final):
 	    # finding direction
 	    i = 0
-	    while (i < 50): 
-	    	self.brake()
-	    	i += 1
-	    direction = [final[0] - self.position[0],final[1] - self.position[1]]
+	    #while (i < 30): 
+	    	#self.brake()
+	    	#i += 1
+	    d = self.parseStatus()
+	    direction = [final[0] - self.position[0],self.position[1] - final[1]]
 	    normalized = math.sqrt(math.pow(direction[0], 2) + math.pow(direction[1], 2))
 	    direction[0] = direction[0]/normalized
 	    direction[1] = direction[1]/normalized
-
+       
 	    #normalizing current velocity
 	    normalized = math.sqrt(math.pow(self.velocity[0], 2) + math.pow(self.velocity[1], 2))
+	    
 	    velocity_normalized = [self.velocity[0], self.velocity[1]]
 	    velocity_normalized[0] = velocity_normalized[0]/normalized
 	    velocity_normalized[1] = velocity_normalized[1]/normalized
 
 	    #finding acceleration to reach point <x1, y1> from <x,y>
 	    # V + A = nd ; we need to find A
-	    n = 3
-	    acceleration = [n * direction[0] - velocity_normalized[0], n * direction[1] - velocity_normalized[1]]
+	    acceleration = [direction[0]-velocity_normalized[0],  direction[1]-velocity_normalized[1]]
 	    normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
-	    acc_rads = math.atan2(acceleration[0]/normalized, acceleration[1]/normalized)
-	    acc_rads = acc_rads + (math.pi * 2) if acc_rads < 0 else acc_rads
-	    print(acc_rads)
+	    #print(direction[0])
+	    #print(self.position[0]) 
+	    #print(final[0])
+	    #print(direction[1])
+	    #print(self.position[1])
+	    #print(final[1])
+	    acc_rads = math.atan2(acceleration[1]/normalized,acceleration[0]/normalized)
+	    print(math.degrees(acc_rads))
+	    acc_rads =  (0 - acc_rads) if acc_rads < 0 else (3.14 * 2) - acc_rads
+	    
 	    #acceleration[0] = math.atan2(acceleration[0]/normalized)
 	    #acceleration[1] = math.atan2(acceleration[1]/normalized)
-	    var1 = math.sqrt(math.pow(self.position[0] - final[0], 2) + math.pow(self.position[1] - final[1], 2))
-	    while var1 >= 2:
+	    while True:
 	    	print "looping"
-	    	self.accelerate(acc_rads, 1)
+	    	d = self.parseStatus()
+	    	time.sleep(0.2)
+	    	acc_rads = self.updateAcc_Rads(final)
+	    	self.accelerate(acc_rads, 1)#min(30.0,(self.position[0]-final[0])**2 + (self.position[1]-final[1])**2)/60.0)
+	    	print(math.sqrt((self.position[0]-final[0])**2 + (self.position[1]-final[1])**2))
+	    	if "jmv" in d.get("MINEPLAYER"):
+	    		break;
+
 		#self.accelerate(radians, 1)
 		#var = math.sqrt(((self.position[0] - final[0])**2) +((self.position[1] - final[1])**2))
+	def updateAcc_Rads(self, final): 
+		d = self.parseStatus()
+		direction = [final[0] - self.position[0],self.position[1] - final[1]]
+		normalized = math.sqrt(math.pow(direction[0], 2) + math.pow(direction[1], 2))
+		direction[0] = direction[0]/normalized
+		direction[1] = direction[1]/normalized
+		#normalizing current velocity
+		normalized = math.sqrt(math.pow(self.velocity[0], 2) + math.pow(self.velocity[1], 2))
+	 	
+		velocity_normalized = [self.velocity[0], self.velocity[1]]
+		velocity_normalized[0] = velocity_normalized[0]/normalized
+		velocity_normalized[1] = velocity_normalized[1]/normalized
+
+		acceleration = [direction[0]-velocity_normalized[0],  direction[1]-velocity_normalized[1]]
+		normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
+
+
+		acc_rads = math.atan2(acceleration[1]/normalized,acceleration[0]/normalized)
+		acc_rads =  0 - acc_rads if acc_rads < 0 else 3.14 * 2 - acc_rads
+		return acc_rads
+
+
 
 import time
 
@@ -153,8 +191,10 @@ if __name__ == '__main__':
 		d=p.parseStatus()
 		mines=d.get("MINES")
 		for i in mines:
-			mineSet.add(i)
-			p.goTo(i)
+			if i not in mineSet:
+				p.goTo(i)
+				mineSet.add(i)
+			
 
 		print(d)
 		print(mineSet)
