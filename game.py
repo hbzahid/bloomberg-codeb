@@ -64,7 +64,7 @@ class Player():
 			mines=mines[1:]
 			t=[]
 			for i in range(len(mines)/3):
-				t.append((mines[3*i + 1],mines[3*i + 2]))
+				t.append((float(mines[3*i + 1]),float(mines[3*i + 2])))
 			mines=t[:]
 		players = []
 		while (status[i] != 'BOMBS'):
@@ -75,6 +75,8 @@ class Player():
 		while (i < len(status)):
 			bombs.append(status[i])
 			i += 1
+		self.position=(float(status[0]),float(status[1]))
+		self.velocity=(float(status[2]),float(status[3]))
 		statusDict = {'MINES': mines, 'PLAYERS': players, 'BOMBS': bombs, 'x': status[0], 'y': status[1],
 						'dx': status[2], 'dy': status[3]}
 		return statusDict
@@ -82,6 +84,28 @@ class Player():
 	def score(self):
 		return self.run("SCOREBOARD")
 
+	def goTo(self, final):
+	    # finding direction
+	    direction = [final[0] - self.position[0],final[1] - self.position[1]]
+	    normalized = math.sqrt(math.pow(direction[0], 2) + math.pow(direction[1], 2))
+	    direction[0] = direction[0]/normalized
+	    direction[1] = direction[1]/normalized
+
+	    #normalizing current velocity
+	    normalized = math.sqrt(math.pow(self.velocity[0], 2) + math.pow(self.velocity[1], 2))
+	    velocity_normalized = [self.velocity[0], self.velocity[1]]
+	    velocity_normalized[0] = velocity_normalized[0]/normalized
+	    velocity_normalized[1] = velocity_normalized[1]/normalized
+
+	    #finding acceleration to reach point <x1, y1> from <x,y>
+	    # V + A = nd ; we need to find A
+	    n = 3
+	    acceleration = [n * direction[0] - velocity_normalized[0], n * direction[1] - velocity_normalized[1]]
+	    normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
+	    acceleration[0] = math.acos(acceleration[0]/normalized) * (3.14 / 360)
+	    acceleration[1] = math.asin(acceleration[1]/normalized) * (3.14 / 360)
+		#self.accelerate(radians, 1)
+		#t=math.sqrt(((self.position[0] - final[0])**2) +((self.position[1] - final[1])**2))
 
 import time
 
@@ -116,6 +140,8 @@ if __name__ == '__main__':
 		mines=d.get("MINES")
 		for i in mines:
 			mineSet.add(i)
+			p.goTo(i)
+
 		print(d)
 		print(mineSet)
 
