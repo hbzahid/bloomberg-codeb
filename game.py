@@ -105,6 +105,11 @@ class DataVizualize(object):
     def draw(self):
         if self.type = "distplot":
             sns.distplot(x=data['x'], data=data)
+        elif self.type = "barplot":
+            sns.barplot(x=data['x'], y=data['y'], data=data)
+        else:
+            logging.warn "unknown type, please add a type for this exception"
+
 
 
 
@@ -137,3 +142,12 @@ if __name__ == '__main__':
 		p.accelerate(3.14, 1)
 		print(p.parseStatus())
 
+
+
+'''
+simple example of seaborn's functionality
+x = pd.Series([1,2,3,4,5)
+sns.distplot(x=x)
+y= pd.Series([1,2,3,4,5])
+sns.barplot(x=x, y=y)
+'''
