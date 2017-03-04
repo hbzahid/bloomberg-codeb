@@ -1,5 +1,6 @@
 import clientpy2 as cp
 from collections import defaultdict
+import math
 
 class Game:
 	def __init__(self):
@@ -57,6 +58,14 @@ class Player():
 			mines.append(status[i])
 			i += 1
 		i += 1
+		if(len(mines)==1):
+			mines=[]
+		else:
+			mines=mines[1:]
+			t=[]
+			for i in range(len(mines)/3):
+				t.append((mines[3*i + 1],mines[3*i + 2]))
+			mines=t[:]
 		players = []
 		while (status[i] != 'BOMBS'):
 			players.append(status[i])
@@ -98,11 +107,20 @@ def scan(x, y):
 
 if __name__ == '__main__':
 	p = Player()
+	radians=math.atan(2*150.0/10000.0)
+	mineSet=set()
 	while True:
-		p.accelerate(3.14, 1)
-		print(p.parseStatus())
+		p.accelerate(radians, 1)
+		#print(p.parseStatus())
+		d=p.parseStatus()
+		mines=d.get("MINES")
+		for i in mines:
+			mineSet.add(i)
+		print(d)
+		print(mineSet)
+
 		# print(p.score())
 		#print(p.game.config)
-        
+
 # I don't want to mess with your code, but I think that you should run each of the commands, and see what happens, to some extent, this does look like an AI contest
 # But there's a bunch of things that you would wnat to do first.
