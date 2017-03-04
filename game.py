@@ -1,4 +1,8 @@
 import time
+import os
+import seaborn as sns
+import pandas as pd
+import logging
 import clientpy2 as cp
 from collections import defaultdict
 
@@ -46,25 +50,24 @@ class Player():
 		st = self.run("STATUS")
 		return st
 
-
 	def parseStatus(self):
 		status = self.status().split(" ")[1:-1]
 		i = 0
 		mines = []
-		while (status[i] != 'MINES'):
+		while status[i] != 'MINES':
 			i += 1
 		i += 1
-		while (status[i] != 'PLAYERS'):
+		while status[i] != 'PLAYERS':
 			mines.append(status[i])
 			i += 1
 		i += 1
 		players = []
-		while (status[i] != 'BOMBS'):
+		while status[i] != 'BOMBS':
 			players.append(status[i])
 			i += 1
 		i += 1
 		bombs = []
-		while (i < len(status)):
+		while i < len(status):
 			bombs.append(status[i])
 			i += 1
 		statusDict = {'MINES': mines, 'PLAYERS': players, 'BOMBS': bombs, 'x': status[0], 'y': status[1],
@@ -75,8 +78,39 @@ class Player():
 		return self.run("SCOREBOARD")
 
 
+class Strategy(object):
+    def __init__(self):
+        self.refined_options = None
+        self.json_struct = [{"time": "", "mines": [{"x": "", "y": ""}], "bombs": [{"x": "", "y": ""}],
+                             "info": ""}]
+        # self.params = time, mines [mines_locations], players: , bombs [bombs_locations]: , info:
+
+    def _refine(self, status_dict):
+        logging.warn("Tuning the refinement params")
+
+
+    def create_data(curr_json, curr_data):
+        curr_json.append(curr_data)  # It's a little more complicated than this, but you get the idea
+        # you want to update a json object to use
+        return self.json_struct
+
+
+
+
+
+class DataVizualize(object):
+    def __init__(self, type, data):
+        self.type = type
+
+    def draw(self):
+        if self.type = "distplot":
+            sns.distplot(x=data['x'], data=data)
+
+
+
 def run(command):
 	return cp.run("jmv", "mrgoose", command)
+
 
 def status():
     return run("STATUS")
@@ -85,11 +119,13 @@ def status():
 def brake():
     return run("BRAKE")
 
+
 def bomb(x, y, t=None):
 	if t is not None:
 		return run("BOMB %f %f %f", (x, y, t))
 	else:
 		return run("BOMB %f %f", (x, y))
+
 
 def scan(x, y):
 	return run("SCAN %f %f", (x, y))
@@ -100,6 +136,4 @@ if __name__ == '__main__':
 	while True:
 		p.accelerate(3.14, 1)
 		print(p.parseStatus())
-		# print(p.score())
-		#print(p.game.config)
 
