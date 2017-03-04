@@ -104,8 +104,9 @@ class Player():
 	    normalized = math.sqrt( math.pow(acceleration[0], 2) + math.pow(acceleration[1], 2))
 	    acceleration[0] = math.acos(acceleration[0]/normalized) * (3.14 / 360)
 	    acceleration[1] = math.asin(acceleration[1]/normalized) * (3.14 / 360)
+	    var1 = math.sqrt(math.pow(self.position[0] - final[0], 2) + math.pow(self.position[1] - final[1], 2))
 		#self.accelerate(radians, 1)
-		#t=math.sqrt(((self.position[0] - final[0])**2) +((self.position[1] - final[1])**2))
+		#var = math.sqrt(((self.position[0] - final[0])**2) +((self.position[1] - final[1])**2))
 
 import time
 
